@@ -19,7 +19,8 @@ use crate::{Close, Next, Reset, Volume};
 /// # Example
 /// ```
 /// use ta::indicators::AnchorVolumeWeightedAveragePrice;
-/// use ta::data::Bar;
+/// use ta::DataItem;
+/// use ta::Next;
 ///
 /// let mut anchor_vwap = AnchorVolumeWeightedAveragePrice::new();
 /// let bar = DataItem::builder().open(1.0).high(1.0).low(1.0).close(1.0).volume(1.0).build().unwrap();
