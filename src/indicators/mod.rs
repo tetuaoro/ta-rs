@@ -68,8 +68,11 @@ pub use self::money_flow_index::MoneyFlowIndex;
 mod on_balance_volume;
 pub use self::on_balance_volume::OnBalanceVolume;
 
+mod parabolic_stop_and_reverse;
+pub use self::parabolic_stop_and_reverse::ParabolicStopAndReverse;
+
 mod cumulative_volume_delta;
 pub use self::cumulative_volume_delta::CumulativeVolumeDelta;
 
-mod parabolic_stop_and_reverse;
-pub use self::parabolic_stop_and_reverse::ParabolicStopAndReverse;
+mod anchor_volume_weighted_average_price;
+pub use self::anchor_volume_weighted_average_price::AnchorVolumeWeightedAveragePrice;
