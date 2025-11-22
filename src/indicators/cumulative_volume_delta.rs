@@ -10,12 +10,6 @@ use serde::{Deserialize, Serialize};
 /// for each price movement. It is often used to gauge the strength of a trend by analyzing
 /// whether volume is predominantly buying or selling.
 ///
-/// # Formula
-/// For each period:
-/// - If the price movement is positive (close > open), the buying volume is calculated as a fraction of the total volume.
-/// - If the price movement is negative (close < open), the selling volume is calculated as a fraction of the total volume.
-/// - The delta is calculated as `volume * rate` and accumulated over time.
-///
 /// # Example
 /// ```
 /// use ta::{Next, indicators::CumulativeVolumeDelta, DataItem};
@@ -23,6 +17,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// // Assume `data` is a struct implementing `Open`, `Close`, and `Volume` traits.
 /// let data = DataItem::builder().open(1.0).high(1.0).low(1.0).close(1.0).volume(1.0).build().unwrap();
+/// // or cvd.next((1.0, 2.0)); as `ask` and `bid` input
 /// let delta = cvd.next(&data);
 /// println!("Current CVD: {}", cvd);
 /// ```
@@ -30,7 +25,6 @@ use serde::{Deserialize, Serialize};
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
 pub struct CumulativeVolumeDelta {
-    rate: f64,
     cumulative_delta: f64,
     history: Vec<f64>,
 }
@@ -39,10 +33,9 @@ impl CumulativeVolumeDelta {
     /// Creates a new `CumulativeVolumeDelta` instance.
     ///
     /// # Returns
-    /// A new instance of `CumulativeVolumeDelta` with `cumulative_delta` set to 0.0 and an empty history.
+    /// A new instance of `CumulativeVolumeDelta`.
     pub fn new() -> Self {
         Self {
-            rate: 0.5,
             cumulative_delta: 0.0,
             history: Vec::new(),
         }
@@ -59,6 +52,27 @@ impl CumulativeVolumeDelta {
     }
 }
 
+impl Next<(f64, f64)> for CumulativeVolumeDelta {
+    type Output = f64;
+
+    fn next(&mut self, (ask, bid): (f64, f64)) -> Self::Output {
+        let delta = if ask < bid {
+            // Positive price movement: assume buying pressure
+            bid
+        } else if ask > bid {
+            // Negative price movement: assume selling pressure
+            -ask
+        } else {
+            // No price movement: delta is zero
+            0.0
+        };
+
+        self.cumulative_delta += delta;
+        self.history.push(delta);
+        delta
+    }
+}
+
 impl<T: Open + Close + Volume> Next<&T> for CumulativeVolumeDelta {
     type Output = f64;
 
@@ -66,10 +80,10 @@ impl<T: Open + Close + Volume> Next<&T> for CumulativeVolumeDelta {
         let (open, close, volume) = (input.open(), input.close(), input.volume());
         let delta = if close > open {
             // Positive price movement: assume buying pressure
-            volume * self.rate
+            volume
         } else if close < open {
             // Negative price movement: assume selling pressure
-            -volume * self.rate
+            -volume
         } else {
             // No price movement: delta is zero
             0.0
