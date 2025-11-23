@@ -82,3 +82,6 @@ pub use self::impulse_moving_average_convergence_divergence::{
     ImpulseMovingAverageConvergenceDivergence, ImpulseMovingAverageConvergenceDivergenceOutput,
     ImpulseMovingAverageConvergenceDivergenceParameters,
 };
+
+mod quad_volume_profile;
+pub use self::quad_volume_profile::{QuadroVolumeProfile, QuadroVolumeProfileOutput};

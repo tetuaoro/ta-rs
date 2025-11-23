@@ -4,6 +4,9 @@
 //! This indicator combines smoothed moving averages with MACD concepts
 //! to identify momentum and trend strength.
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 use crate::errors::Result;
 use crate::indicators::ExponentialMovingAverage;
 use crate::{Close, High, Low, Next};
@@ -30,7 +33,7 @@ impl Default for ImpulseMovingAverageConvergenceDivergenceParameters {
 
 /// Impulse MACD indicator.
 ///
-/// Implementation of the Impulse MACD indicator by LazyBear.
+/// Implementation of the Impulse MACD indicator.
 /// This indicator combines smoothed moving averages with MACD concepts
 /// to identify momentum and trend strength.
 ///
