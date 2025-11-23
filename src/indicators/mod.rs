@@ -78,4 +78,7 @@ mod anchor_volume_weighted_average_price;
 pub use self::anchor_volume_weighted_average_price::AnchorVolumeWeightedAveragePrice;
 
 mod impulse_moving_average_convergence_divergence;
-pub use self::impulse_moving_average_convergence_divergence::{ImpulseMACD, ImpulseMACDParams};
+pub use self::impulse_moving_average_convergence_divergence::{
+    ImpulseMovingAverageConvergenceDivergence, ImpulseMovingAverageConvergenceDivergenceOutput,
+    ImpulseMovingAverageConvergenceDivergenceParameters,
+};

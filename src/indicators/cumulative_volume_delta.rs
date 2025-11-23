@@ -15,7 +15,6 @@ use serde::{Deserialize, Serialize};
 /// use ta::{Next, indicators::CumulativeVolumeDelta, DataItem};
 /// let mut cvd = CumulativeVolumeDelta::new();
 ///
-/// // Assume `data` is a struct implementing `Open`, `Close`, and `Volume` traits.
 /// let data = DataItem::builder().open(1.0).high(1.0).low(1.0).close(1.0).volume(1.0).build().unwrap();
 /// // or cvd.next((1.0, 2.0)); as `ask` and `bid` input
 /// let delta = cvd.next(&data);

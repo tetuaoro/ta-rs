@@ -1,7 +1,7 @@
 use std::fmt;
 
 use crate::errors::Result;
-use crate::{High, Low, Next, Reset};
+use crate::{Close, High, Low, Next, Open, Reset};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
@@ -66,16 +66,22 @@ impl ParabolicStopAndReverse {
     }
 }
 
-impl<T: High + Low> Next<&T> for ParabolicStopAndReverse {
+impl<T: Open + High + Low + Close> Next<&T> for ParabolicStopAndReverse {
     type Output = f64;
 
     fn next(&mut self, input: &T) -> Self::Output {
+        let (open, close) = (input.open(), input.close());
         let (high, low) = (input.high(), input.low());
 
         if !self.initialized {
-            self.is_uptrend = true; // uptrend by default
-            self.extreme_point = high;
-            self.stop_and_reverse = low;
+            if open < close {
+                self.is_uptrend = true;
+                self.extreme_point = high;
+                self.stop_and_reverse = low;
+            } else {
+                self.extreme_point = low;
+                self.stop_and_reverse = high;
+            }
             self.initialized = true;
             return self.stop_and_reverse;
         }
@@ -156,19 +162,26 @@ mod tests {
     #[test]
     fn test_initialization() {
         let mut sar = ParabolicStopAndReverse::default();
-        let bar = Bar::new().high(15.0).low(5.0);
+        // uptrend
+        let bar = Bar::new().open(7.0).high(15.0).low(5.0).close(10.0);
         assert_eq!(sar.next(&bar), 5.0);
         assert_eq!(sar.extreme_point, 15.0);
         assert!(sar.is_uptrend);
+
+        // downtrend
+        let bar = Bar::new().high(15.0).low(5.0);
+        assert_eq!(sar.next(&bar), 15.0);
+        assert_eq!(sar.extreme_point, 5.0);
+        assert!(!sar.is_uptrend);
     }
 
     #[test]
     fn test_trend_up_to_down() {
         let mut sar = ParabolicStopAndReverse::new(0.2, 0.02).unwrap();
-        let bar1 = Bar::new().high(15.0).low(5.0);
+        let bar1 = Bar::new().open(7.0).high(15.0).low(5.0).close(10.0);
         sar.next(&bar1);
         assert!(sar.is_uptrend);
-        let bar2 = Bar::new().high(16.0).low(4.0);
+        let bar2 = Bar::new().high(10.0).low(1.0);
         let sar_value = sar.next(&bar2);
         assert!(!sar.is_uptrend);
         assert_eq!(sar_value, 15.0);
@@ -177,8 +190,8 @@ mod tests {
     #[test]
     fn test_trend_down_to_up() {
         let mut sar = ParabolicStopAndReverse::new(0.2, 0.02).unwrap();
-        let bar1 = Bar::new().high(15.0).low(5.0); // up by default
-        let bar2 = Bar::new().high(16.0).low(4.0);
+        let bar1 = Bar::new().open(7.0).high(15.0).low(5.0).close(10.0);
+        let bar2 = Bar::new().high(10.0).low(1.0);
         sar.next(&bar1); // up
         sar.next(&bar2); // down
         assert!(!sar.is_uptrend);
