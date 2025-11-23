@@ -74,8 +74,8 @@ pub use self::parabolic_stop_and_reverse::ParabolicStopAndReverse;
 mod cumulative_volume_delta;
 pub use self::cumulative_volume_delta::CumulativeVolumeDelta;
 
-mod anchor_volume_weighted_average_price;
-pub use self::anchor_volume_weighted_average_price::AnchorVolumeWeightedAveragePrice;
+mod volume_weighted_average_price;
+pub use self::volume_weighted_average_price::VolumeWeightedAveragePrice;
 
 mod impulse_moving_average_convergence_divergence;
 pub use self::impulse_moving_average_convergence_divergence::{
