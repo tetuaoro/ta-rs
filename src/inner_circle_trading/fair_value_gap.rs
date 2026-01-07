@@ -27,7 +27,7 @@ impl Next<(f64, f64)> for FairValueGap {
         if let (Some(prev), Some(next)) = (self.history.front(), self.history.get(2)) {
             // uptrend
             if prev.0 < next.1 {
-                return Some((prev.0, next.1));
+                return Some((next.1, prev.0));
             }
             // downtrend
             if prev.1 > next.0 {
@@ -77,8 +77,8 @@ mod tests {
 
         assert!(result.is_some());
         let (high, low) = result.unwrap();
-        assert_eq!(high, 105.0);
-        assert_eq!(low, 106.0);
+        assert_eq!(high, 106.0);
+        assert_eq!(low, 105.0);
     }
 
     #[test]
