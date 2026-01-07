@@ -37,7 +37,6 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [Weighted moving average, Wikipedia](https://en.wikipedia.org/wiki/Moving_average#Weighted_moving_average)
 ///
-
 #[doc(alias = "WMA")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]

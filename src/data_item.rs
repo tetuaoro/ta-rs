@@ -82,6 +82,12 @@ pub struct DataItemBuilder {
     volume: Option<f64>,
 }
 
+impl Default for DataItemBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DataItemBuilder {
     pub fn new() -> Self {
         Self {

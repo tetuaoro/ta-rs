@@ -57,7 +57,6 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [On Balance Volume, Wikipedia](https://en.wikipedia.org/wiki/On-balance_volume)
 /// * [On Balance Volume, stockcharts](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:on_balance_volume_obv)
-
 #[doc(alias = "OBV")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
@@ -80,9 +79,9 @@ impl<T: Close + Volume> Next<&T> for OnBalanceVolume {
 
     fn next(&mut self, input: &T) -> f64 {
         if input.close() > self.prev_close {
-            self.obv = self.obv + input.volume();
+            self.obv += input.volume();
         } else if input.close() < self.prev_close {
-            self.obv = self.obv - input.volume();
+            self.obv -= input.volume();
         }
         self.prev_close = input.close();
         self.obv

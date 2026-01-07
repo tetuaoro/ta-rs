@@ -52,7 +52,6 @@ use serde::{Deserialize, Serialize};
 /// # Links
 /// * [Money Flow Index, Wikipedia](https://en.wikipedia.org/wiki/Money_flow_index)
 /// * [Money Flow Index, stockcharts](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:money_flow_index_mfi)
-
 #[doc(alias = "MFI")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
@@ -102,7 +101,7 @@ impl<T: High + Low + Close + Volume> Next<&T> for MoneyFlowIndex {
         };
 
         if self.count < self.period {
-            self.count = self.count + 1;
+            self.count += 1;
             if self.count == 1 {
                 self.previous_typical_price = tp;
                 return 50.0;

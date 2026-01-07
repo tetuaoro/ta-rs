@@ -28,7 +28,6 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(er.next(18.0), 0.8);
 /// assert_eq!(er.next(19.0), 0.75);
 /// ```
-
 #[doc(alias = "ER")]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
