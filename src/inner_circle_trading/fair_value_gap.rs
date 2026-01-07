@@ -26,11 +26,11 @@ impl Next<(f64, f64)> for FairValueGap {
 
         if let (Some(prev), Some(next)) = (self.history.front(), self.history.get(2)) {
             // uptrend
-            if prev.0 - next.1 < 0.0 {
+            if prev.0 < next.1 {
                 return Some((prev.0, next.1));
             }
             // downtrend
-            if prev.1 - next.0 > 0.0 {
+            if prev.1 > next.0 {
                 return Some((prev.1, next.0));
             }
         }
