@@ -26,7 +26,7 @@ impl Next<(f64, f64)> for FairValueGap {
 
         if let (Some(prev), Some(next)) = (self.history.front(), self.history.get(2)) {
             // uptrend
-            if prev.0 - next.1 > 0.0 {
+            if prev.0 - next.1 < 0.0 {
                 return Some((prev.0, next.1));
             }
             // downtrend
@@ -73,12 +73,12 @@ mod tests {
         let mut fvg = FairValueGap::default();
         fvg.next((105.0, 99.0));
         fvg.next((104.0, 100.0));
-        let result = fvg.next((110.0, 104.0));
+        let result = fvg.next((110.0, 106.0));
 
         assert!(result.is_some());
         let (high, low) = result.unwrap();
         assert_eq!(high, 105.0);
-        assert_eq!(low, 104.0);
+        assert_eq!(low, 106.0);
     }
 
     #[test]
@@ -90,8 +90,8 @@ mod tests {
 
         assert!(result.is_some());
         let (high, low) = result.unwrap();
-        assert_eq!(high, 105.0);
-        assert_eq!(low, 90.0);
+        assert_eq!(high, 99.0);
+        assert_eq!(low, 98.0);
     }
 
     #[test]
@@ -99,7 +99,7 @@ mod tests {
         let mut fvg = FairValueGap::default();
         fvg.next((105.0, 99.0));
         fvg.next((104.0, 100.0));
-        let result = fvg.next((110.0, 106.0));
+        let result = fvg.next((110.0, 104.0));
 
         assert!(result.is_none());
     }
