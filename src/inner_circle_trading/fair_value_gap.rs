@@ -3,7 +3,7 @@ use std::fmt;
 
 use crate::{Next, Reset};
 
-/// Fair Value Gap (FVG) Indicator
+/// Fair Value Gap (FVG) Concept
 ///
 /// The `FairValueGap` struct detects Fair Value Gaps (FVGs) between candlesticks.
 /// An FVG occurs when there is a gap between the high/low of non-consecutive candles,
