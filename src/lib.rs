@@ -60,6 +60,7 @@ mod helpers;
 
 pub mod errors;
 pub mod indicators;
+pub mod inner_circle_trading;
 
 mod traits;
 pub use crate::traits::*;
