@@ -24,9 +24,7 @@ impl Next<(f64, f64)> for FairValueGap {
             self.history.pop_front();
         }
 
-        if self.history.len() == 3 {
-            let prev = &self.history[0];
-            let next = &self.history[2];
+        if let (Some(prev), Some(next)) = (self.history.front(), self.history.get(2)) {
             // uptrend
             if prev.0 - next.1 > 0.0 {
                 return Some((prev.0, next.1));
