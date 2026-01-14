@@ -18,6 +18,7 @@ pub struct FairValueGap {
 impl Next<(f64, f64)> for FairValueGap {
     type Output = Option<(f64, f64)>;
 
+    /// `input`: (high, low)
     fn next(&mut self, input: (f64, f64)) -> Self::Output {
         self.history.push_back(input);
         if self.history.len() > 3 {

@@ -31,22 +31,22 @@ impl BalancedPriceRange {
     }
 
     /// Detects if there is an overlap between two FVGs.
-    fn is_overlap(fvg1: &(f64, f64), fvg2: &(f64, f64)) -> Option<(f64, f64)> {
-        let (high1, low1) = fvg1;
-        let (high2, low2) = fvg2;
-        if high2 < high1 && high2 > low1 {
-            return Some((*high2, *low1));
+    fn overlap(fvg1: &(f64, f64), fvg2: &(f64, f64)) -> Option<(f64, f64)> {
+        let min_high = f64::min(fvg1.0, fvg2.0);
+        let max_low = f64::max(fvg1.1, fvg2.1);
+
+        if fvg1.1 < min_high && max_low < fvg1.0 {
+            Some((min_high, max_low))
+        } else {
+            None
         }
-        if high1 < high2 && high1 > low2 {
-            return Some((*high1, *low2));
-        }
-        None
     }
 }
 
 impl Next<(f64, f64)> for BalancedPriceRange {
     type Output = Option<(f64, f64)>;
 
+    /// `input`: (high, low)
     fn next(&mut self, input: (f64, f64)) -> Self::Output {
         self.counter += 1;
 
@@ -62,7 +62,7 @@ impl Next<(f64, f64)> for BalancedPriceRange {
                 self.fvgs.back(),
                 self.fvgs.get(self.fvgs.len().saturating_sub(2)),
             ) {
-                return Self::is_overlap(fvg1, fvg2);
+                return Self::overlap(fvg1, fvg2);
             }
         }
         None
@@ -110,6 +110,8 @@ mod tests {
         bpr.next((109.0, 106.0)); // Candle 4
         bpr.next((108.0, 106.0)); // Candle 5
         let result = bpr.next((104.0, 103.0)); // Candle 6 (creates a bearish FVG overlapping with the bullish FVG)
+
+        dbg!(bpr);
 
         assert!(result.is_some());
         let (high, low) = result.unwrap();
